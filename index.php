@@ -9,7 +9,7 @@ function tts_say($text,$send){
   if($send==0){return "";}
   //Место для фильтра входящих данных =)
   $cmd = 'wget -q -U Mozilla -O - "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q='.$text.'&tl=Ru-gb"|madplay -';  
-  system($text);
+  system($cmd);
 return "ok";
 }
 
