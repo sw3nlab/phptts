@@ -20,3 +20,13 @@ Text to speech realisation on php and google tts
 //Внесены незначительные изменения!
 >system($text);--> system($cmd);
 
+//16.02.2018 update WEB Interface
+> updated web interface, add new function, tested on OpenWRT/LEDE 17.01
+
+For install to router use .git
+```php
+opkg update
+opkg install git-http
+opkg install ca-bundle
+```
+total: ~6Mb
