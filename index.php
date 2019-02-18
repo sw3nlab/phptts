@@ -13,6 +13,8 @@ $cfg = file("config.txt");
 $stream_url = $_POST['stream_url'];
 $stream_save = $_POST['stream_save'];
 $stream_cfg = file("radio.txt");
+$stream_del_id = $_GET['delete'];
+
 
 if($say=="SAY"){$send=1;}else{$send=0;}
 
@@ -49,6 +51,8 @@ return "<script>document.write('save complete !');document.location.href='?act=c
 function stream_save($stream_url,$stream_save,$stream_cfg){
     if(!$stream_save=="save"){return "";}
 
+    if(!strlen($stream_url)>0){return "";}
+
     $list = '';
 
     for($i=0;$i<count($stream_cfg);$i++){
@@ -68,8 +72,8 @@ function stream_save($stream_url,$stream_save,$stream_cfg){
 function stream_view($stream_cfg){
 
     $str = "";
-    for($i=1;$i<count($stream_cfg);$i++){
-    $str.="<a href=''>PLAY</a>".str_replace("\r\n","<br/>",$stream_cfg[$i])."<a href='?act=radio&delete=".$i."'>X</a><br/>";
+    for($i=0;$i<count($stream_cfg);$i++){
+    $str.="<a href='?act=radio&delete=".$i."'>X</a> | <a href='?act=play&src=".$i."'>".str_replace("\r\n","<br/>",$stream_cfg[$i])."</a><br/>";
     }
 return $str;
 }
@@ -77,8 +81,23 @@ return $str;
 
 function stream_delete($stream_cfg,$stream_del_id){
 
-    //Допилю потом =)))
+    if(is_numeric($stream_del_id)){
 
+        $bfr = "";
+        for($i=0;$i<count($stream_cfg);$i++){
+
+            if($i==$stream_del_id){$out="";}else{$out=$stream_cfg[$i];}
+        $bfr.=$out;
+        
+        }
+        $fp = fopen("radio.txt","w");
+        fwrite($fp,$bfr);
+        fclose($fp);
+ 
+    return "<script>document.write('Delete complete!');document.location.href='?act=radio';</script>";
+    }
+    
+    return "";
 }
 
 
@@ -87,9 +106,7 @@ switch($act){
 case "radio":
 	$content = "
 		<center>
-            <h3>Radio Stations List</h3>
-".stream_view($stream_cfg)."
-<br/>
+        <br/>".stream_delete($stream_cfg,$stream_del_id)."
 ".stream_save($stream_url,$stream_save,$stream_cfg)."
 <form action='' method='post'>
 Radio Stream URL:
@@ -98,6 +115,11 @@ Radio Stream URL:
 <input type='hidden' name='stream_save' value='save'>
 <input type='submit' value='Добавить'>
 </form>
+<div align='left'>
+<tt>
+".stream_view($stream_cfg)."
+</tt>
+</div>
 		</center>";
 break;
 
@@ -143,11 +165,12 @@ break;
 
 default:
 	$content= "
-		<center>
-		<tt>PHPTTS WEB player =)</tt>
+        <center>
+    <br/><br/>
+		<tt>PHP Micro WEB Player =)</tt><br/>
 	<small>
 	ОпенСорсный WEB плеер c <br/>синтезом речи, радио и будильником ;)
-	<br/>
+	<br/><br/>
 	<a href='https://github.com/sw3nlab/phptts'>github</a>
  | 
 	<a href='https://vk.com/cyberunit'>vk</a>
@@ -162,13 +185,13 @@ default:
 echo "
 <html>
   <head>
-  <title>PHPTTS web player</title>
+  <title>PHP Micro web player</title>
   </head>
 
 <body>
 
 <center>
-<h3>[ PHPTTS Navigation ]</h3>
+<tt>[ PHP Micro web player ]</tt>
 	<table border='0' width='50%' height='50%'>
 <tr>
 <td valign='top'>
