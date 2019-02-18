@@ -15,18 +15,29 @@ Text to speech realisation on php and google tts
 ### Необходимые железяки
 > Встроеная или внешняя USB звуковая плата + колонки или наушники =)
 
-Разработчики всего мира - объединяйтесь !
-
-//Внесены незначительные изменения!
->system($text);--> system($cmd);
-
-//16.02.2018 update WEB Interface
-> updated web interface, add new function, tested on OpenWRT/LEDE 17.01
-
-For install to router use .git
-```php
-opkg update
-opkg install git-http
-opkg install ca-bundle
+### Установка
+Debian / Raspbian
+```bash
+#!!! Это Предварительная версия мана по установке! ВОЗМОЖНО ОТСУТСТВИЕ НЕКОТОРЫХ ПАКЕТОВ !
+sudo apt-get update
+sudo apt-get install apache2 php5 git madplay
+sudo usermod -a -G audio www-data
+cd /var/www/html/
+git clone https://github.com/sw3nlab/phptts.git
+cd phptts/
+chmod 777 *.txt
 ```
-total: ~6Mb
+
+OpenWRT / LEDE
+```bash
+#!!! Это Предварительная версия мана по установке! ВОЗМОЖНО ОТСУТСТВИЕ НЕКОТОРЫХ ПАКЕТОВ !
+opkg update
+opkg install kmod-usb-audio php7-cgi madplay git-http ca-bundle
+cd /www/
+git clone https://github.com/sw3nlab/phptts.git
+cd phptts/
+chmod 777 *.txt
+```
+Итого: ~10Mb Свободного места на flash роутера.
+
+### Разработчики всего мира - объединяйтесь !
