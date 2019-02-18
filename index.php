@@ -188,14 +188,15 @@ echo "
   <title>PHP Micro web player</title>
   </head>
 
-<body>
+<body bgcolor='".$cfg[2]."'>
 
 <center>
 <tt>[ PHP Micro web player ]</tt>
-	<table border='0' width='50%' height='50%'>
+	<table border='0' width='70%' height='70%'>
 <tr>
 <td valign='top'>
 <br/>
+<tt>
 <a href='?main'>Инфо</a>
 <br/><br/>
 <a href='?act=radio'>Радио</a>
@@ -205,6 +206,7 @@ echo "
 <a href='?act=alarm'>Будильник</a>
 <br/><br/>
 <a href='?act=cfg'>Настройки</a>
+</tt>
 </td><br/>
 <td valign='top'>
 ".$content."
