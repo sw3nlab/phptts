@@ -1,3 +1,3 @@
 [main]
 madplay
-#c0c0c0
+silver

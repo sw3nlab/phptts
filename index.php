@@ -1,9 +1,9 @@
 <?php
 
 $act = $_GET['act'];
+$src = $_GET['src'];
 $text = $_POST['text'];
 $say = $_POST['say'];
-
 
 $cfg_player = $_POST['cfg_player'];
 $cfg_color = $_POST['cfg_color'];
@@ -24,13 +24,28 @@ function tts_say($text,$send,$cfg){
 $s1 = "d2dldCAtcSAtVSBNb3ppbGxhIC1PIC0gImh0dHA6Ly90cmFuc2xhdGUuZ29vZ2xlLmNvbS90cmFuc2xhdGVfdHRzP2llPVVURi04JnRvdGFsPTEmaWR4PTAmdGV4dGxlbj0zMiZjbGllbnQ9dHctb2ImcT0=";
 $s2 = "JnRsPVJ1LWdiIg==";
 
-  $cmd = base64_decode($s1).''.str_replace('`','',trim($text)).''.base64_decode($s2).'|'.trim($cfg[1]).' -';
+  $cmd = base64_decode($s1).''.urlencode(str_replace('`','',trim($text))).''.base64_decode($s2).'|'.trim($cfg[1]).' -';
 
-//system($cmd);
+system($cmd);
 
-return $cmd;
+return "ok";
 
 }
+
+function stream_play($src){
+
+if(!is_numeric($src)){return "";}
+
+$url = file("radio.txt");
+
+$play_cmd = "wget -O - ".trim($url[$src])."|madplay -";
+
+system($play_cmd);
+
+return "Music is:<br/>".$play_cmd."<br/><a href='?act=stop'>Stop</a>";	
+
+}
+
 
 
 function cfg_save($cfg_player,$cfg_color,$cfg_save){
@@ -73,11 +88,18 @@ function stream_view($stream_cfg){
 
     $str = "";
     for($i=0;$i<count($stream_cfg);$i++){
-    $str.="<a href='?act=radio&delete=".$i."'>X</a> | <a href='?act=play&src=".$i."'>".str_replace("\r\n","<br/>",$stream_cfg[$i])."</a><br/>";
+    $str.="<a href='?act=radio&delete=".$i."'>X</a> | <a target='_blank' href='?act=play&src=".$i."'>".str_replace("\r\n","<br/>",$stream_cfg[$i])."</a><br/>";
     }
 return $str;
 }
 
+function stream_stop($act){
+if($act=="stop"){
+
+system("kill -9 $(pidof madplay)");
+return "<script>document.location.href='?act=radio';</script>";
+}
+}
 
 function stream_delete($stream_cfg,$stream_del_id){
 
@@ -102,6 +124,14 @@ function stream_delete($stream_cfg,$stream_del_id){
 
 
 switch($act){
+
+case "play":
+$content = "<center>
+
+<tt>Play<br/>".stream_play($src)."</tt>
+
+</center>";
+break;
 
 case "radio":
 	$content = "
@@ -206,8 +236,11 @@ echo "
 <a href='?act=alarm'>Будильник</a>
 <br/><br/>
 <a href='?act=cfg'>Настройки</a>
+<br/><br/>
+<a href='?act=stop'>STOP</a>
 </tt>
 </td><br/>
+".stream_stop($act)."
 <td valign='top'>
 ".$content."
 </td>
