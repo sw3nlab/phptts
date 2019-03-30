@@ -15,6 +15,11 @@ $stream_save = $_POST['stream_save'];
 $stream_cfg = file("radio.txt");
 $stream_del_id = $_GET['delete'];
 
+function volume($act){
+if($act=="vp"){@system("amixer set Master 10%+");}
+if($act=="vm"){@system("amixer set Master 10%-");}
+return "";
+}
 
 if($say=="SAY"){$send=1;}else{$send=0;}
 
@@ -238,9 +243,13 @@ echo "
 <a href='?act=cfg'>Настройки</a>
 <br/><br/>
 <a href='?act=stop'>STOP</a>
+<br/><br/>
+Volume:
+<a href='?act=vp'> + </a> | <a href='?act=vm'> - </a>
 </tt>
 </td><br/>
 ".stream_stop($act)."
+".volume($act)."
 <td valign='top'>
 ".$content."
 </td>
