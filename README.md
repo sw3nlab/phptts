@@ -22,6 +22,7 @@ Debian / Raspbian
 sudo apt-get update
 sudo apt-get install apache2 php5 git madplay
 sudo usermod -a -G audio www-data
+sudo service apache2 restart
 cd /var/www/html/
 git clone https://github.com/sw3nlab/phptts.git
 cd phptts/
