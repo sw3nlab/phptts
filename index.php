@@ -15,11 +15,6 @@ $stream_save = $_POST['stream_save'];
 $stream_cfg = file("radio.txt");
 $stream_del_id = $_GET['delete'];
 
-function volume($act){
-if($act=="vp"){@system("amixer set Master 10%+");}
-if($act=="vm"){@system("amixer set Master 10%-");}
-return "";
-}
 
 if($say=="SAY"){$send=1;}else{$send=0;}
 
@@ -98,12 +93,13 @@ function stream_view($stream_cfg){
 return $str;
 }
 
-function stream_stop($act){
+function stream_control($act){
 if($act=="stop"){
-
 system("kill -9 $(pidof madplay)");
 return "<script>document.location.href='?act=radio';</script>";
 }
+if($act=="vp"){system("amixer set Master 10%+");return "";}
+if($act=="vm"){system("amixer set Master 10%-");return "";}
 }
 
 function stream_delete($stream_cfg,$stream_del_id){
@@ -241,20 +237,28 @@ echo "
 <a href='?act=alarm'>Будильник</a>
 <br/><br/>
 <a href='?act=cfg'>Настройки</a>
-<br/><br/>
-<a href='?act=stop'>STOP</a>
-<br/><br/>
-Volume:
-<a href='?act=vp'> + </a> | <a href='?act=vm'> - </a>
+
 </tt>
 </td><br/>
-".stream_stop($act)."
-".volume($act)."
+".stream_control($act)."
 <td valign='top'>
 ".$content."
 </td>
-</tr>
-	</table>
+
+	<td align='center' valign='top'>
+	<br/><br/>
+	<tt>
+	Player Control
+	<br/><br/>
+		<a href='?act=vm'> - </a> Volume <a href='?act=vp'> + </a>
+	<br/><br/>
+	<a href='?act=stop'>STOP</a>
+	</tt>
+
+	</td>
+
+</tr>	
+</table>
 	</center>
 
 	</body>
