@@ -88,18 +88,24 @@ function stream_view($stream_cfg){
 
     $str = "";
     for($i=0;$i<count($stream_cfg);$i++){
-    $str.="<a href='?act=radio&delete=".$i."'>X</a> | <a target='_blank' href='?act=play&src=".$i."'>".str_replace("\r\n","<br/>",$stream_cfg[$i])."</a><br/>";
+    $str.="<a href='?act=radio&delete=".$i."'>X</a> | <a onclick='httpGet(\"?act=play&src=".$i."\")'  href='#'>".str_replace("\r\n","<br/>",$stream_cfg[$i])."</a><br/>";
     }
-return $str;
+return "<small>".$str."</small>";
 }
 
 function stream_control($act){
+
+$back = "<script>document.location.href='?act=radio';</script>";
+
 if($act=="stop"){
 system("kill -9 $(pidof madplay)");
-return "<script>document.location.href='?act=radio';</script>";
+return $back;
 }
-if($act=="vp"){system("amixer set Master 10%+");return "";}
-if($act=="vm"){system("amixer set Master 10%-");return "";}
+if($act=="vp"){system("amixer set Master 10%+>/dev/null");
+return $back;}
+
+if($act=="vm"){system("amixer set Master 10%->/dev/null");
+return $back;}
 }
 
 function stream_delete($stream_cfg,$stream_del_id){
@@ -140,7 +146,7 @@ case "radio":
         <br/>".stream_delete($stream_cfg,$stream_del_id)."
 ".stream_save($stream_url,$stream_save,$stream_cfg)."
 <form action='' method='post'>
-Radio Stream URL:
+<small>Radio Stream URL<br/>or<br/>Remote Sound file (.mp3,wav)</small>
 <br/>
 <input type='text' name='stream_url'>
 <input type='hidden' name='stream_save' value='save'>
@@ -194,6 +200,13 @@ Color :<input type='text' name='cfg_color' value='".$cfg[2]."'>
 ";
 break;    
 
+case "inf":
+$content = "<center><br/><br/>
+<tt>Место Зарезервировано под информер =)</tt>
+</center>";
+break;
+
+
 default:
 	$content= "
         <center>
@@ -217,40 +230,64 @@ echo "
 <html>
   <head>
   <title>PHP Micro web player</title>
+
+<script>
+function httpGet(stream)
+{
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET',stream, true);
+	xhr.send();
+
+}
+</script>
+
+<style type='text/css'>
+#hdr{width:700px;height:25px;border-top:1px solid black;border-bottom:1px solid black;border-left:1px solid black;border-right:1px solid black;}
+
+#tbl{border-top:1px solid silver;border-left:1px solid silver;
+border-right:1px solid silver;border-bottom:1px solid silver;}
+
+</style>
   </head>
 
 <body bgcolor='".$cfg[2]."'>
 
 <center>
-<tt>[ PHP Micro web player ]</tt>
-	<table border='0' width='70%' height='70%'>
+<div id='hdr'><b>[ PHP Micro web player ]</b></div>
+
+<table border='0' width='680' height='300'>
 <tr>
-<td valign='top'>
-<br/>
+<td width='150' align='center' id='tbl'>
+<tt><b>Navigation<b></tt>
+<br/><br/>
 <tt>
 <a href='?main'>Инфо</a>
 <br/><br/>
 <a href='?act=radio'>Радио</a>
 <br/><br/>
-<a href='?act=say'>Голосовое сообщение</a>
+<a href='?act=say'>Голос</a>
 <br/><br/>
 <a href='?act=alarm'>Будильник</a>
 <br/><br/>
 <a href='?act=cfg'>Настройки</a>
-
+<br/><br/>
+<a href='?act=inf'>Информатор</a>
 </tt>
-</td><br/>
+</td>
+
+<td>
+<br/>
 ".stream_control($act)."
-<td valign='top'>
+<td id='tbl' valign='top'>
 ".$content."
 </td>
 
-	<td align='center' valign='top'>
-	<br/><br/>
+	<td width='150' id='tbl' align='center' valign='top'>
+	<br/><br/><br/>
 	<tt>
-	Player Control
+	<b>Player Control</b>
 	<br/><br/>
-		<a href='?act=vm'> - </a> Volume <a href='?act=vp'> + </a>
+		<a href='?act=vm'> <b>-</b> </a> Volume <a href='?act=vp'> <b>+</b> </a>
 	<br/><br/>
 	<a href='?act=stop'>STOP</a>
 	</tt>
@@ -259,6 +296,7 @@ echo "
 
 </tr>	
 </table>
+<div id='hdr'><b><small>[ v.1.0 /30.03.2019/ ]</small></b></div>
 	</center>
 
 	</body>
