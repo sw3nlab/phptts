@@ -1,3 +1,2 @@
 http://air.radiorecord.ru:8102/chil_320
 http://air.radiorecord.ru:8102/tm_320
-http://port47.dlinkddns.com/trance.mp3
