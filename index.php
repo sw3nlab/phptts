@@ -97,16 +97,43 @@ function stream_control($act){
 
 $back = "<script>document.location.href='?act=radio';</script>";
 
+
+/*======= Volume Controller ========*/
+/*
+Nettop x86_x64 output
+> amixer
+Simple mixer control 'Master',0 <---------------------- Set volume controller to Master
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65536
+  Mono:
+  Front Left: Playback 32846 [50%] [on]
+  Front Right: Playback 32846 [50%] [on]
+
+------------------------------------
+Raspberry Pi 1 Model B output
+> amixer
+Simple mixer control 'PCM',0 <------------------------- Set volume controller to PCM
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback -10239 - 400
+  Mono: Playback -3189 [66%] [-31.89dB] [on] 
+*/
+
+
 if($act=="stop"){
 system("kill -9 $(pidof madplay)");
 return $back;
 }
-if($act=="vp"){system("amixer set Master 10%+>/dev/null");
+//========================= Volume Controller==========
+if($act=="vp"){system("amixer set PCM 10db+>/dev/null");
 return $back;}
 
-if($act=="vm"){system("amixer set Master 10%->/dev/null");
+if($act=="vm"){system("amixer set PCM 10db->/dev/null");
 return $back;}
 }
+
+/*==================================*/
 
 function stream_delete($stream_cfg,$stream_del_id){
 

@@ -1,2 +1,3 @@
 http://air.radiorecord.ru:8102/chil_320
 http://air.radiorecord.ru:8102/tm_320
+http://ep256.hostingradio.ru:8052/europaplus256.mp3
