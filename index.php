@@ -4,6 +4,7 @@ $act = $_GET['act'];
 $src = $_GET['src'];
 $text = $_POST['text'];
 $say = $_POST['say'];
+$track = htmlspecialchars(trim($_GET['track']));
 
 $cfg_player = $_POST['cfg_player'];
 $cfg_color = $_POST['cfg_color'];
@@ -39,6 +40,8 @@ if(!is_numeric($src)){return "";}
 $url = file("radio.txt");
 
 $play_cmd = "wget -O - ".trim($url[$src])."|madplay -";
+
+system("kill -9 $(pidof madplay)");//kill old player first
 
 system($play_cmd);
 
@@ -93,6 +96,32 @@ function stream_view($stream_cfg){
 return "<small>".$str."</small>";
 }
 
+
+
+function scan_mp3(){
+
+$tracklist = "";
+$cnt = 1;
+foreach (glob("*.mp3") as $track) {
+	$tracklist.= $cnt . ") <a href='?act=mp3scan&track=".$track."'>" . $track . "</a> - Size: " . filesize($track) . "<br/>";
+	$cnt++;
+}
+
+if(!$tracklist){
+return "Добавьте файлы .mp3 в директорию phptts";
+}else{return $tracklist;}
+}
+
+function mp3_play($track){
+	if(!$track){return "Let's Dance... ! =)";}
+	system("kill -9 $(pidof madplay)");
+
+	//Ckeck $track to Evil
+	system("madplay ".$track.">/dev/null");
+	return "Now playing ".$track;
+}
+
+
 function stream_control($act){
 
 $back = "<script>document.location.href='?act=radio';</script>";
@@ -100,7 +129,7 @@ $back = "<script>document.location.href='?act=radio';</script>";
 
 /*======= Volume Controller ========*/
 /*
-Nettop x86_x64 output
+Nettop x86_64 output
 > amixer
 Simple mixer control 'Master',0 <---------------------- Set volume controller to Master
   Capabilities: pvolume pswitch pswitch-joined
@@ -203,8 +232,11 @@ case "say":
 ";
 break;
 
-case "alarm":
-$content = "<b>Функция в разработке ;/</b>";
+case "mp3scan":
+$content = "<b>Сканируем директорию указаную в config</b><br/><br/>".scan_mp3()."<br/>".mp3_play($track);
+
+
+
 break;
 
 case "cfg":
@@ -240,7 +272,7 @@ default:
     <br/><br/>
 		<tt>PHP Micro WEB Player =)</tt><br/>
 	<small>
-	ОпенСорсный WEB плеер c <br/>синтезом речи, радио и будильником ;)
+	ОпенСорсный WEB плеер c <br/>синтезом речи и радио  ;)
 	<br/><br/>
 	<a href='https://github.com/sw3nlab/phptts'>github</a>
  | 
@@ -284,7 +316,7 @@ border-right:1px solid silver;border-bottom:1px solid silver;}
 
 <table border='0' width='680' height='300'>
 <tr>
-<td width='150' align='center' id='tbl'>
+<td width='150' align='center' valign='top' id='tbl'>
 <tt><b>Navigation<b></tt>
 <br/><br/>
 <tt>
@@ -294,7 +326,7 @@ border-right:1px solid silver;border-bottom:1px solid silver;}
 <br/><br/>
 <a href='?act=say'>Голос</a>
 <br/><br/>
-<a href='?act=alarm'>Будильник</a>
+<a href='?act=mp3scan'>MP3 Files</a>
 <br/><br/>
 <a href='?act=cfg'>Настройки</a>
 <br/><br/>
@@ -323,7 +355,7 @@ border-right:1px solid silver;border-bottom:1px solid silver;}
 
 </tr>	
 </table>
-<div id='hdr'><b><small>[ v.1.0 /30.03.2019/ ]</small></b></div>
+<div id='hdr'><b><small>[ v.1.3 /14.11.2021/ ]</small></b></div>
 	</center>
 
 	</body>
