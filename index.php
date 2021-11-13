@@ -103,12 +103,12 @@ function scan_mp3(){
 $tracklist = "";
 $cnt = 1;
 foreach (glob("*.mp3") as $track) {
-	$tracklist.= $cnt . ") <a href='?act=mp3scan&track=".$track."'>" . $track . "</a> - Size: " . filesize($track) . "<br/>";
+	$tracklist.= $cnt . ") <a onclick='httpGet(\"?act=mp3scan&track=".$track."\")' href='#'>" . $track . "</a> - Size: " . filesize($track) . "<br/>";
 	$cnt++;
 }
 
 if(!$tracklist){
-return "Добавьте файлы .mp3 в директорию phptts";
+return ".mp3 в директории phptts";
 }else{return $tracklist;}
 }
 
@@ -117,7 +117,7 @@ function mp3_play($track){
 	system("kill -9 $(pidof madplay)");
 
 	//Ckeck $track to Evil
-	system("madplay ".$track.">/dev/null");
+	system("madplay ".$track);
 	return "Now playing ".$track;
 }
 
