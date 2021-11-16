@@ -103,7 +103,7 @@ function scan_mp3(){
 $tracklist = "";
 $cnt = 1;
 foreach (glob("*.mp3") as $track) {
-	$tracklist.= $cnt . ") <a onclick='httpGet(\"?act=mp3scan&track=".$track."\")' href='#'>" . $track . "</a> - Size: " . filesize($track) . "<br/>";
+	$tracklist.= "<small>".$cnt . ") <a onclick='httpGet(\"?act=mp3scan&track=".$track."\")' href='#'>" . $track . "</a></small><br/><br/>";
 	$cnt++;
 }
 
@@ -135,10 +135,10 @@ Simple mixer control 'Master',0 <---------------------- Set volume controller to
   Capabilities: pvolume pswitch pswitch-joined
   Playback channels: Front Left - Front Right
   Limits: Playback 0 - 65536
+
   Mono:
   Front Left: Playback 32846 [50%] [on]
   Front Right: Playback 32846 [50%] [on]
-
 ------------------------------------
 Raspberry Pi 1 Model B output
 > amixer
@@ -233,10 +233,15 @@ case "say":
 break;
 
 case "mp3scan":
-$content = "<b>Сканируем директорию указаную в config</b><br/><br/>".scan_mp3()."<br/>".mp3_play($track);
+	$content = "<b>Сканируем текущую директорию phptts</b>
+		<br/>
+<br/>".scan_mp3()."<br/>".mp3_play($track);
+
+break;
 
 
-
+case "playlist":
+	$content = "Создание плейлиста<br/>функция в разработке";
 break;
 
 case "cfg":
@@ -328,6 +333,8 @@ border-right:1px solid silver;border-bottom:1px solid silver;}
 <br/><br/>
 <a href='?act=mp3scan'>MP3 Files</a>
 <br/><br/>
+<a href='?act=playlist'>Плейлисты</a>
+<br/><br/>
 <a href='?act=cfg'>Настройки</a>
 <br/><br/>
 <a href='?act=inf'>Информатор</a>
@@ -346,7 +353,7 @@ border-right:1px solid silver;border-bottom:1px solid silver;}
 	<tt>
 	<b>Player Control</b>
 	<br/><br/>
-		<a href='?act=vm'> <b>-</b> </a> Volume <a href='?act=vp'> <b>+</b> </a>
+		<a href='?act=vm'><font size='8px'>-</font></a> Volume <a href='?act=vp'> <font size='8px'>+</font> </a>
 	<br/><br/>
 	<a href='?act=stop'>STOP</a>
 	</tt>
