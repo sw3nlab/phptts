@@ -293,6 +293,7 @@ default:
 echo "
 <html>
   <head>
+  <meta charset='utf-8'/>
   <title>PHP Micro web player</title>
 
 <script>
